@@ -1,33 +1,59 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.15;
+pragma solidity ^0.8.0;
 
-struct Constraint {
-    function (bytes memory) external view returns (uint256) characteristic;
+type Value is uint64;
+
+struct Column {
+    uint256[] values;
 }
 
-struct Circuit {
-    Constraint[] constraints;
-    uint256 epsilon;
+struct ColumnFixed {
+    Column column;
 }
 
-library CircuitLib {
-    function evaluate(Constraint memory self, bytes memory input) internal view returns (uint256) {
-        return self.characteristic(input);
-    }
-
-    function prove(Circuit memory self, bytes memory input) internal view {
-        for (uint256 i = 0; i < self.constraints.length; i++) {
-            assert(evaluate(self.constraints[i], input) < self.epsilon);
-        }
-    }
-
-    function add(Circuit storage self, Constraint memory constraint) internal {
-        self.constraints.push(constraint);
-    }
-
-    function add(Circuit storage self, function (bytes memory) external view returns (uint) characteristic) internal {
-        self.constraints.push(Constraint(characteristic));
-    }
+struct ColumnAdvice {
+    Column column;
 }
 
-using CircuitLib for Circuit global;
+struct ColumnInstance {
+    Column column;
+}
+
+struct Selector {
+    Column column;
+}
+
+struct MyConfig {
+    ColumnAdvice a;
+    ColumnAdvice b;
+    ColumnAdvice c;
+    Selector s;
+}
+
+abstract contract ConstraintSystem {
+    function advice_column() public view virtual returns (ColumnAdvice memory);
+
+    function selector() public view virtual returns (Selector memory);
+
+    function create_gate(string memory name, function (ConstraintSystem) external) public virtual;
+}
+
+contract Circuit {
+    MyConfig config;
+
+    function configure(ConstraintSystem meta) public view returns (MyConfig memory) {
+        ColumnAdvice memory a = meta.advice_column();
+        ColumnAdvice memory b = meta.advice_column();
+        ColumnAdvice memory c = meta.advice_column();
+        Selector memory s = meta.selector();
+
+        //meta.create_gate("R1CS constraint", this.create_R1CS_constraint);
+
+        return MyConfig({a: a, b: b, c: c, s: s});
+    }
+
+    function synthesize(ConstraintSystem meta) public view {
+        //FloorPlanner planner = new FloorPlanner();
+        //planner.place(config);
+    }
+}
