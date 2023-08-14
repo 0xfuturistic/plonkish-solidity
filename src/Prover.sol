@@ -36,13 +36,13 @@ abstract contract Prover {
     Region current_region;
 
     // The fixed cells in the circuit, arranged as [column][row].
-    mapping(uint256 => mapping(uint256 => CellValue)) fixed_cells;
+    CellValue[][] fixed_cells;
     // The advice cells in the circuit, arranged as [column][row].
-    mapping(uint256 => mapping(uint256 => CellValue)) advice_cells;
+    CellValue[][] advice_cells;
     // The instance cells in the circuit, arranged as [column][row].
-    mapping(uint256 => mapping(uint256 => InstanceValue)) instance_cells;
+    InstanceValue[][] instance_cells;
 
-    mapping(uint256 => mapping(uint256 => bool)) selectors;
+    bool[][] selectors;
 
     // TODO: permutation: permutation::keygen::Assembly,
 
