@@ -5,7 +5,7 @@ import {console2} from "forge-std/console2.sol";
 
 struct Constraint {
     string name;
-    string expression;
+    string expression; // maybe use function pointer here?
     string queries;
 }
 
@@ -14,7 +14,7 @@ struct Gate {
     Constraint[] constraints;
 }
 
-/// @dev A struct for collecting and displaying the gates within a circuit.
+/// @dev An abstract contract for collecting and displaying the gates within a circuit.
 ///
 /// # Examples
 ///
@@ -72,7 +72,7 @@ struct Gate {
 ///     format!("{}", gates),
 ///     r#####"R1CS constraint:
 /// - R1CS:
-///   S0 * (A0@0 * A1@0 - A2@0)
+///   S0 * (A0-0 * A1-0 - A2-0)
 /// Total gates: 1
 /// Total custom constraint polynomials: 1
 /// Total negations: 1
